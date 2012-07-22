@@ -1,6 +1,6 @@
 <?php
 /*
-	FB() for KISSCMS
+	Facebook wrapper for KISSCMS
 	Simple Facebook connection with KISSCMS using the official PHP SDK
 	Homepage: http://kisscms.com/plugins
 	Created by Makis Tracend (@tracend)
@@ -81,6 +81,41 @@ class FB {
 		$data['url'] = $this->loginUrl;
 		$data['view'] = getPath('facebook/views/redirect.php');
 		return $data;
+	}
+	
+	
+	// Cache
+	
+	function getCache(){
+		// set up the parent container, the first time
+		if( !array_key_exists("facebook", $_SESSION) ) $_SESSION['facebook']= array();
+		return $_SESSION['facebook'];
+		
+	}
+	
+	function setCache( $data ){
+		// save the data in the session
+		foreach( $data as $key => $result ){
+			$_SESSION['facebook'][$key] = $result;
+		}
+		// update the local variable
+		$this->cache = $this->getCache();
+	}
+	
+	function checkCache( $type ){
+		// always discard cache on debug mode
+		if( DEBUG ) return false; 
+		
+		if( !empty($this->cache[$type]) ) {
+			// check the date 
+			$valid = true;
+		}
+		
+		return ( $valid ) ? true : false;
+	}
+	
+	function deleteCache(){
+		unset($_SESSION['facebook']);
 	}
 	
 }
