@@ -25,9 +25,10 @@ class Fb_OAuth extends KISS_OAuth_v2 {
 	
 	function save( $response ){
 		
-		// erase the existing cache
-		$fb = new FB();
-		$fb->deleteCache();
+		// erase the existing creds
+		unset($_SESSION['oauth']['facebook']);
+		//$fb = new FB();
+		//$fb->deleteCache();
 		
 		// convert string into an array
 		parse_str( $response, $auth );
