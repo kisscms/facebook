@@ -27,6 +27,13 @@ class FB {
 		  'cookie' => true,
 		));
 		
+		// FIX: session ID is not being passed in IE.
+		// reference http://stackoverflow.com/a/8600879
+		header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
+		
+		// get user data
+		$this->request = $this->parsePageSignedRequest();
+		
 		//Facebook Authentication part
 		$this->uid = $facebook->getUser();
 		
@@ -74,6 +81,18 @@ class FB {
 		}
 		return implode(",", $admins);
 
+	}
+	
+	private function parsePageSignedRequest() {
+		if (isset($_REQUEST['signed_request'])) {
+			$encoded_sig = null;
+			$payload = null;
+			list($encoded_sig, $payload) = explode('.', $_REQUEST['signed_request'], 2);
+			$sig = base64_decode(strtr($encoded_sig, '-_', '+/'));
+			$data = json_decode(base64_decode(strtr($payload, '-_', '+/'), true));
+			return $data;
+		}
+		return false;
 	}
 	
 	function redirect(){
