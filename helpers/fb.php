@@ -13,6 +13,8 @@ class FB {
 	public $loginUrl;
 	public $user;
 	public $request;
+	private  $creds;
+	public $oauth;
 	
 	// Facebook functions
 	function __construct(){ 
@@ -20,10 +22,12 @@ class FB {
 		$this->uid 		= false;
 		$this->request 	= false;
 		
+		$this->config = $GLOBALS['config']['facebook'];
+		
 		// init
-		$facebook = $this->facebook = new Facebook(array(
-		  'appId' => FB_APPID,
-		  'secret' => FB_SECRET,
+		$this->facebook = new Facebook(array(
+		  'appId' => $this->config['appId'],
+		  'secret' => $this->config['secret'],
 		  'cookie' => true,
 		));
 		
@@ -32,35 +36,60 @@ class FB {
 		header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
 		
 		// get user data
-		$this->request = $this->parsePageSignedRequest();
+		//$this->request = $this->parsePageSignedRequest();
 		
-		//Facebook Authentication part
-		$this->uid = $facebook->getUser();
-		
-		$this->loginUrl = $facebook->getLoginUrl(
+		/*$this->loginUrl = $this->facebook->getLoginUrl(
 				array(
-					'scope' => $GLOBALS['config']['facebook']['scope'],
+					'scope' => $this->config['scope'],
 					'redirect_uri' => 'http://apps.facebook.com/'. FB_URI .'/'
 				)
-		);
+		);*/
 	 	
-		if ($this->uid) {
-		  try {
-			// Proceed knowing you have a logged in user who's authenticated.
-			$this->user = $facebook->api("/".$this->uid);
-			$this->request = $facebook->getSignedRequest();
-			
-		  } catch (FacebookApiException $e) {
-			//error_log($e);
-			// fallback to the session values
-			
-			$this->page = $_SESSION['fb_page'];
-		  }
-		}
- 	
+		$this->init();
+		
 		return $this;
 	}
 		
+	function init(){
+		// load all the necessery subclasses
+		$this->oauth = new FB_OAuth();
+		
+	}
+	
+	
+	function login(){
+		
+		// get/update the creds
+		$this->creds = $this->oauth->creds();
+		
+		$this->facebook->setAccessToken($this->creds['access_token']);
+		
+		// check if the credentials are empty
+		return !empty($this->creds);
+	
+	}
+	
+	function me(){
+		// connect to the service to get the user object
+		
+		//Facebook Authentication part
+		$uid = $this->facebook->getUser();
+		
+		if ($uid) {
+			try {
+				// Proceed knowing you have a logged in user who's authenticated.
+				$this->user = $this->facebook->api("/me");
+				//$this->request = $this->facebook->getSignedRequest();
+				return $this->user;
+			} catch (FacebookApiException $e) {
+				//error_log($e);
+				// fallback to the session values
+				//$this->page = $_SESSION['fb_page'];
+			}
+		}
+ 	
+	}
+	
 	function post(){
 		
 	}
@@ -104,7 +133,7 @@ class FB {
 	
 	
 	// Cache
-	
+	/*
 	function getCache(){
 		// set up the parent container, the first time
 		if( !array_key_exists("facebook", $_SESSION) ) $_SESSION['facebook']= array();
@@ -136,7 +165,7 @@ class FB {
 	function deleteCache(){
 		unset($_SESSION['facebook']);
 	}
-	
+	*/
 }
 
 

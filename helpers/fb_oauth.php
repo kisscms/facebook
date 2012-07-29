@@ -21,6 +21,8 @@ class Fb_OAuth extends KISS_OAuth_v2 {
 		$this->token = ( empty($_SESSION['oauth']['facebook']['access_token']) ) ? false : $_SESSION['oauth']['facebook']['access_token'];
 	 	$this->refresh_token = ( empty($_SESSION['oauth']['facebook']['refresh_token']) ) ? false : $_SESSION['oauth']['facebook']['refresh_token'];
 	 	
+		$this->api = "facebook";
+		
 	}
 	
 	function save( $response ){
