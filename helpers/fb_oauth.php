@@ -5,7 +5,7 @@ require_once( realpath("../") . "/app/plugins/oauth/helpers/kiss_oauth.php" );
 /* Facebook OAuth for KISSCMS */
 class Fb_OAuth extends KISS_OAuth_v2 {
 	
-	function  __construct( $api="fb", $url="https://graph.facebook.com/oauth") {
+	function  __construct( $api="facebook", $url="https://graph.facebook.com/oauth") {
 
 		$this->url = array(
 			'authorize' 		=> "https://www.facebook.com/dialog/oauth", 
@@ -13,15 +13,12 @@ class Fb_OAuth extends KISS_OAuth_v2 {
 			'refresh_token' 	=> $url ."/access_token"
 		);
 		
-		$this->redirect_uri = url("/oauth/api/". $api);
+		// FIX: duplicate the appId so it can be used by the parent __construct
+		$GLOBALS['config']['facebook']['key'] = $GLOBALS['config']['facebook']['appId'];
 		
-		$this->client_id = $GLOBALS['config']['facebook']['appId'];
-	 	$this->client_secret = $GLOBALS['config']['facebook']['secret'];
+		$this->redirect_uri = url("/oauth/api/fb");
 		
-		$this->token = ( empty($_SESSION['oauth']['facebook']['access_token']) ) ? false : $_SESSION['oauth']['facebook']['access_token'];
-	 	$this->refresh_token = ( empty($_SESSION['oauth']['facebook']['refresh_token']) ) ? false : $_SESSION['oauth']['facebook']['refresh_token'];
-	 	
-		$this->api = "facebook";
+		parent::__construct( $api, $url );
 		
 	}
 	
@@ -40,7 +37,7 @@ class Fb_OAuth extends KISS_OAuth_v2 {
 			$auth['expiry'] = date(DATE_ISO8601, (strtotime("now") + $auth['expires'] ) );
 		
 		// save to the user session 
-		$_SESSION['oauth']['facebook'] = $auth;
+		$_SESSION['oauth']['facebook'] = (array) $auth;
 	}
 	
 }
