@@ -10,27 +10,35 @@ window.fbAsyncInit = function() {
 	  oauth : true 
 	});
 	
-	
+	//console.log(FBcommon);
+	fb_call = new FBcalls();
 }
 
 
 // Common Functions
+function FBcalls() {}
 
-function addToPage() {
 
-	// calling the API ...
-	var obj = {
-	  method: 'pagetab',
-	  redirect_uri: 'http://apps.facebook.com/fb_appId/',
-	};
+FBcalls.prototype = {
 	
-	FB.ui(obj);
+	addToPage: function() {
+
+		// calling the API ...
+		var obj = {
+		  method: 'pagetab',
+		  redirect_uri: 'http://apps.facebook.com/fb_appId/',
+		};
+		
+		FB.ui(obj);
+	}, 
+
+	openTabLink: function (url){
+		window.top.location.href = url;
+	}, 
+	
+	postToProfile: function (){
+	  
+	}
+	
 }
 
-function openTabLink(url){
-	window.top.location.href = url;
-}
-
-function postToProfile(){
-  
-}
