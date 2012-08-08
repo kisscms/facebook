@@ -1,6 +1,6 @@
 <?php
 // FIX - to include the base OAuth lib not in alphabetical order
-require_once( realpath("../") . "/app/plugins/oauth/helpers/kiss_oauth.php" );
+require_once( APP . "plugins/oauth/helpers/kiss_oauth.php" );
 
 /* Facebook OAuth for KISSCMS */
 class Fb_OAuth extends KISS_OAuth_v2 {
