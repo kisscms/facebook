@@ -1,6 +1,8 @@
 <?php
 // FIX - to include the base OAuth lib not in alphabetical order
-require_once( APP . "plugins/oauth/helpers/kiss_oauth.php" );
+$oauth = getPath("helpers/kiss_oauth.php");
+( $oauth ) ? require_once( $oauth ) : die("The site is offline as a nessesary plugin is missing. Please install oauth: github.com/kisscms/oauth");
+
 
 /* Facebook OAuth for KISSCMS */
 class Fb_OAuth extends KISS_OAuth_v2 {
