@@ -1,6 +1,5 @@
 window.fbAsyncInit = function() {
 	
-	
 	FB.init({
 	  appId 		: fb_appId, // App ID
 	  //channelUrl : '//'+window.location.hostname+'/channel', // Path to your Channel File
@@ -12,7 +11,8 @@ window.fbAsyncInit = function() {
 	
 	//console.log(FBcommon);
 	fb_call = new FBcalls();
-}
+	
+};
 
 // Load base lib
 (function(d,t) {
