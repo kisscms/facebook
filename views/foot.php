@@ -8,4 +8,4 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
 	})();
 </script>
-<script type="text/javascript" src="<?=url("js/facebook.js")?>" data-type="require"></script>
+<script type="text/javascript" src="<?=url("/js/facebook.js")?>" data-type="require" data-path="facebook"></script>
