@@ -90,6 +90,28 @@ class FB {
  	
 	}
 	
+	function get( $service="", $params=array() ){
+		
+		// check cache before....
+		
+		// add access_token
+		if( empty($params['access_token']) ) $params['access_token'] = $this->creds['access_token'];
+		
+		$this->facebook->setAccessToken($params['access_token']);
+		
+		try {
+			// Proceed knowing you have a logged in user who's authenticated.
+			$results = $this->facebook->api( $service );
+		} catch (FacebookApiException $e) {
+			$results = $e;
+		}
+		// cache result
+		//$this->setCache( $service, $params, $results );
+		
+		return $results;
+		
+	}
+	
 	function post(){
 		
 	}
