@@ -49,7 +49,19 @@ class FB {
 		
 		return $this;
 	}
+	
+	// for all missing methods, it is assumed that we might be calling a facebook sdk method
+    function __call($method, $arguments){
+
+		try {
+			$response = $this->facebook->{$method}($arguments);
+		} catch (Exception $e) {
+			die('Caught exception: '.  $e->getMessage() );
+		}
 		
+		return $response;
+    }
+	
 	function init(){
 		// load all the necessery subclasses
 		$this->oauth = new FB_OAuth();
