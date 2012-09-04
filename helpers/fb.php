@@ -54,7 +54,9 @@ class FB {
     function __call($method, $arguments){
 
 		try {
-			$response = $this->facebook->{$method}($arguments);
+			// this won't work because the $arguments are enclosed in an array...
+			//$response = $this->facebook->{$method}($arguments);
+			$response = call_user_func_array( array($this->facebook, $method), $arguments);
 		} catch (Exception $e) {
 			die('Caught exception: '.  $e->getMessage() );
 		}
