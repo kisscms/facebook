@@ -112,10 +112,11 @@ class FB {
 		if( empty($params['access_token']) ) $params['access_token'] = $this->creds['access_token'];
 		
 		$this->facebook->setAccessToken($params['access_token']);
+		$query = http_build_query($params);
 		
 		try {
 			// Proceed knowing you have a logged in user who's authenticated.
-			$results = $this->facebook->api( $service );
+			$results = $this->facebook->api( $service ."?". $query  );
 		} catch (FacebookApiException $e) {
 			$results = $e;
 		}
