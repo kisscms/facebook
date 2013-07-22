@@ -15,43 +15,43 @@ class FB {
 	public $request;
 	private  $creds;
 	public $oauth;
-	
+
 	// Facebook functions
-	function __construct(){ 
-		// setup 
+	function __construct(){
+		// setup
 		$this->uid 		= false;
 		$this->request 	= false;
-		
+
 		$this->config = $GLOBALS['config']['facebook'];
-		
+
 		// init
 		$this->facebook = new Facebook(array(
 		  'appId' => $this->config['appId'],
 		  'secret' => $this->config['secret'],
 		  'cookie' => true,
 		));
-		
+
 		// FIX: session ID is not being passed in IE.
 		// reference http://stackoverflow.com/a/8600879
 		header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
-		
+
 		// get user data
 		//$this->request = $this->parsePageSignedRequest();
-		
+
 		/*$this->loginUrl = $this->facebook->getLoginUrl(
 				array(
 					'scope' => $this->config['scope'],
 					'redirect_uri' => 'http://apps.facebook.com/'. FB_URI .'/'
 				)
 		);*/
-	 	
+
 		$this->init();
-		
+
 		return $this;
 	}
-	
+
 	// for all missing methods, it is assumed that we might be calling a facebook sdk method
-    function __call($method, $arguments){
+	function __call($method, $arguments){
 
 		try {
 			// this won't work because the $arguments are enclosed in an array...
@@ -60,35 +60,35 @@ class FB {
 		} catch (Exception $e) {
 			die('Caught exception: '.  $e->getMessage() );
 		}
-		
+
 		return $response;
-    }
-	
+	}
+
 	function init(){
 		// load all the necessery subclasses
 		$this->oauth = new FB_OAuth();
-		
+
 	}
-	
-	
+
+
 	function login(){
-		
+
 		// get/update the creds
 		$this->creds = $this->oauth->creds();
-		
+
 		$this->facebook->setAccessToken($this->creds['access_token']);
-		
+
 		// check if the credentials are empty
 		return !empty($this->creds);
-	
+
 	}
-	
+
 	function me(){
 		// connect to the service to get the user object
-		
+
 		//Facebook Authentication part
 		$uid = $this->facebook->getUser();
-		
+
 		if ($uid) {
 			try {
 				// Proceed knowing you have a logged in user who's authenticated.
@@ -101,19 +101,19 @@ class FB {
 				//$this->page = $_SESSION['fb_page'];
 			}
 		}
- 	
+
 	}
-	
+
 	function get( $service="", $params=array() ){
-		
+
 		// check cache before....
-		
+
 		// add access_token
 		if( empty($params['access_token']) ) $params['access_token'] = $this->creds['access_token'];
-		
+
 		$this->facebook->setAccessToken($params['access_token']);
 		$query = http_build_query($params);
-		
+
 		try {
 			// Proceed knowing you have a logged in user who's authenticated.
 			$results = $this->facebook->api( $service ."?". $query  );
@@ -122,25 +122,25 @@ class FB {
 		}
 		// cache result
 		//$this->setCache( $service, $params, $results );
-		
+
 		return $results;
-		
+
 	}
-	
+
 	function post(){
-		
+
 	}
-	
+
 	function delete(){
-		
+
 	}
-	
+
 	function getAdmins(){
 		$admins = array();
 		$api = $this->facebook->api("/fql?q=". urlencode("SELECT uid from page_admin WHERE page_id=".FB_APPID). "&format=json-strings");
-		if( !empty($api) ){ 
+		if( !empty($api) ){
 			foreach( $api['data'] as $admin ){
-				if( array_key_exists('uid', $admin) ){  
+				if( array_key_exists('uid', $admin) ){
 					$admins[] = $admin['uid'];
 				}
 			}
@@ -148,7 +148,7 @@ class FB {
 		return implode(",", $admins);
 
 	}
-	
+
 	private function parsePageSignedRequest() {
 		if (isset($_REQUEST['signed_request'])) {
 			$encoded_sig = null;
@@ -160,24 +160,24 @@ class FB {
 		}
 		return false;
 	}
-	
+
 	function redirect(){
 		$data = array();
 		$data['url'] = $this->loginUrl;
 		$data['view'] = getPath('facebook/views/redirect.php');
 		return $data;
 	}
-	
-	
+
+
 	// Cache
 	/*
 	function getCache(){
 		// set up the parent container, the first time
 		if( !array_key_exists("facebook", $_SESSION) ) $_SESSION['facebook']= array();
 		return $_SESSION['facebook'];
-		
+
 	}
-	
+
 	function setCache( $data ){
 		// save the data in the session
 		foreach( $data as $key => $result ){
@@ -186,19 +186,19 @@ class FB {
 		// update the local variable
 		$this->cache = $this->getCache();
 	}
-	
+
 	function checkCache( $type ){
 		// always discard cache on debug mode
-		if( DEBUG ) return false; 
-		
+		if( DEBUG ) return false;
+
 		if( !empty($this->cache[$type]) ) {
-			// check the date 
+			// check the date
 			$valid = true;
 		}
-		
+
 		return ( $valid ) ? true : false;
 	}
-	
+
 	function deleteCache(){
 		unset($_SESSION['facebook']);
 	}

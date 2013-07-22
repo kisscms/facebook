@@ -1,6 +1,6 @@
 <?php
 
-class FB_Comments extends Section { 
+class FB_Comments extends Section {
 
 	function __construct($view=false, $vars=false, $data=false){
 		parent::__construct($view,$vars);
@@ -16,7 +16,7 @@ class FB_Comments extends Section {
 				"colorscheme" => "light",
 				"num_posts" => "10"
 		);
-		
+
 		return $options;
 	}
 
