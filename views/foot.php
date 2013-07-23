@@ -4,4 +4,6 @@
 	var fb_appId = <?=$config['facebook']['appId']?>;
 	var fb_uri = "<?=$config['facebook']['uri']?>";
 </script>
-<script type="text/javascript" src="<?=url("/js/facebook.js")?>" data-type="require" data-path="facebook"></script>
+// Load base lib
+<script type="text/javascript" src="//connect.facebook.net/en_US/all.js" data-type="require" data-path="facebook"></script>
+<script type="text/javascript" src="<?=url("/assets/js/helpers/facebook.js")?>" data-type="require" data-path="facebook-init" data-deps="facebook"></script>

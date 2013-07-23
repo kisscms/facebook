@@ -14,13 +14,6 @@ window.fbAsyncInit = function() {
 
 };
 
-// Load base lib
-(function(d,t) {
-	var id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-	var js = d.createElement(t); js.type = 'text/javascript'; js.id = id; js.async = true;
-	js.src = ("https:"==location.protocol?"https:":"http:")+"//connect.facebook.net/en_US/all.js";
-	var s = document.getElementsByTagName(t)[0]; s.parentNode.insertBefore(js, s);
-})(document,"script");
 
 
 // Common Functions
@@ -32,9 +25,9 @@ FBcalls.prototype = {
 	requestLogin: function(){
 
 		FB.ui({
-		  method: 'oauth',
-		  client_id: fb_appId,
-		  redirect_uri: 'https://apps.facebook.com/'+ fb_uri +'/'
+			method: 'oauth',
+			client_id: fb_appId,
+			redirect_uri: 'https://apps.facebook.com/'+ fb_uri +'/'
 		},
 			function (response) {
 				if( typeof( response ) != "undefined") {
