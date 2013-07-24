@@ -6,3 +6,6 @@ $GLOBALS['client']['fb']['appId'] = $config['facebook']['appId'];
 $GLOBALS['client']['fb']['uri'] = $config['facebook']['uri'];
 $GLOBALS['client']['fb']['token']  = ( empty($_SESSION['oauth']['facebook']['access_token']) ) ? false : $_SESSION['oauth']['facebook']['access_token'];
 ?>
+<? // Load base lib ?>
+<script type="text/javascript" src="//connect.facebook.net/en_US/all.js" data-type="require" data-path="facebook"></script>
+<script type="text/javascript" src="<?=url("/assets/js/helpers/facebook.js")?>" data-type="require" data-path="facebook-init" data-deps="facebook"></script>
