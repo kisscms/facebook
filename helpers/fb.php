@@ -26,9 +26,9 @@ class FB {
 
 		// init
 		$this->facebook = new Facebook(array(
-		  'appId' => $this->config['appId'],
-		  'secret' => $this->config['secret'],
-		  'cookie' => true,
+			'appId' => $this->config['appId'],
+			'secret' => $this->config['secret'],
+			'cookie' => true
 		));
 
 		// FIX: session ID is not being passed in IE.
@@ -36,7 +36,7 @@ class FB {
 		header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
 
 		// get user data
-		//$this->request = $this->parsePageSignedRequest();
+		$this->request = $this->parsePageSignedRequest();
 
 		/*$this->loginUrl = $this->facebook->getLoginUrl(
 				array(
