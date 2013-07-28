@@ -151,14 +151,23 @@ class FB {
 
 	private function parsePageSignedRequest() {
 		if (isset($_REQUEST['signed_request'])) {
+
 			$encoded_sig = null;
 			$payload = null;
 			list($encoded_sig, $payload) = explode('.', $_REQUEST['signed_request'], 2);
 			$sig = base64_decode(strtr($encoded_sig, '-_', '+/'));
-			$data = json_decode(base64_decode(strtr($payload, '-_', '+/'), true));
+			$data = json_decode(base64_decode(strtr($payload, '-_', '+/'), true), true);
+			// save to session
+			$_SESSION["fb_signed_request"] = $data;
 			return $data;
+
+		} elseif( isset($_SESSION["fb_signed_request"]) ){
+
+			return $_SESSION["fb_signed_request"];
+
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	function redirect(){
