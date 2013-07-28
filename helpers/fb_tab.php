@@ -1,7 +1,10 @@
 <?
+// FIX - to include the base OAuth lib not in alphabetical order
+//$kiss_auth = getPath("helpers/auth.php");
+//( $kiss_auth ) ? require_once( $kiss_auth ) : die("Failed to load class KISS_Auth");
 
 // Main Tab controller
-class FB_Tab extends KISS_Auth {
+class FB_Tab {
 
 	public $facebook;
 	private $name;
@@ -13,23 +16,25 @@ class FB_Tab extends KISS_Auth {
 	function __construct($controller_path,$web_folder,$default_controller,$default_function){
 
 		// exit if there is no name
-		if( !$name ) return;
+		//if( !$name ) return;
 
-		$defaults = array(
-			"ssl" => false,
-			"template_uri" => '/'. $name .'/templates/'
-		);
+		//$defaults = array(
+		//	"ssl" => false
+		//);
+
+		$this->config = $GLOBALS['config']['facebook'];
 
 		// save variables
-		$this->name = $name;
-		$this->options = array_merge( $defaults, $options);
+		//$this->name = $name;
+		//$this->options = array_merge( $defaults, $options);
 
-		// initialize facebook
+		// init
 		$this->facebook = new Facebook(array(
-			'appId'  => FB_AppID,
-			'secret' => FB_AppSecret,
+			'appId' => $this->config['appId'],
+			'secret' => $this->config['secret'],
 			'cookie' => true
 		));
+
 
 		// FIX: session ID was not being passed in IE.
 		// reference http://stackoverflow.com/a/8600879
@@ -42,12 +47,12 @@ class FB_Tab extends KISS_Auth {
 
 		// post-processing
 		if( $this->request ){
-			$this->getPage();
-			$this->getTabInfo();
-			$this->checkSSL();
+			//$this->getPage();
+			//$this->getTabInfo();
+			//$this->checkSSL();
 		}
 		// initialize template
-		$this->template = new miniTemplate( array( "path" => $_SERVER['DOCUMENT_ROOT'] . $this->options["template_uri"], "ext" => "html" ) );
+		//$this->template = new miniTemplate( array( "path" => $_SERVER['DOCUMENT_ROOT'] . $this->options["template_uri"], "ext" => "html" ) );
 
 		// render page
 		//$this->render();
@@ -55,6 +60,7 @@ class FB_Tab extends KISS_Auth {
 		return parent::__construct($controller_path,$web_folder,$default_controller,$default_function);
 	}
 
+	/*
 	public function render( $view, $vars=false ){
 
 		// first pass the data we've gathered (if any)
@@ -76,11 +82,12 @@ class FB_Tab extends KISS_Auth {
 		echo $output;
 
 	}
-
+	*/
+	/*
 	public function login( $view ){
 
 	}
-
+	*/
 
 	// Helpers
 
@@ -169,6 +176,7 @@ class FB_Tab extends KISS_Auth {
 
 		return ($expiry - $now < 0);
 	}
+
 }
 
 ?>
