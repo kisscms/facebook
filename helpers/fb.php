@@ -35,8 +35,6 @@ class FB {
 		// reference http://stackoverflow.com/a/8600879
 		header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
 
-		// get user data
-		$this->request = $this->parsePageSignedRequest();
 
 		/*$this->loginUrl = $this->facebook->getLoginUrl(
 				array(
@@ -67,7 +65,10 @@ class FB {
 	function init(){
 		// load all the necessery subclasses
 		$this->oauth = new FB_OAuth();
-
+		// get user data
+		$this->request = $this->parsePageSignedRequest();
+		// set the access_token from the request if available
+		//var_dump( $this->request );
 	}
 
 
