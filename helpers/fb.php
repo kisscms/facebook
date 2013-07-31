@@ -76,8 +76,9 @@ class FB {
 		// get/update the creds
 		$this->creds = $this->oauth->creds();
 
-		$this->facebook->setAccessToken($this->creds['access_token']);
-
+		if( !empty($this->creds['access_token']) ){
+			$this->facebook->setAccessToken($this->creds['access_token']);
+		}
 		// check if the credentials are empty
 		return !empty($this->creds);
 
