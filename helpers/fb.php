@@ -80,8 +80,8 @@ class FB {
 		if( !empty($this->creds['access_token']) ){
 			$this->facebook->setAccessToken($this->creds['access_token']);
 		}
-		// check if the credentials are empty
-		return !empty($this->creds);
+		// check if the credentials are empty (only the token matters?)
+		return !empty($this->creds['access_token']);
 
 	}
 
