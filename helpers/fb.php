@@ -152,6 +152,9 @@ class FB {
 	}
 
 	private function parsePageSignedRequest() {
+		// prerequisite
+		if( !array_key_exists("fb", $_SESSION) ) $_SESSION["fb"] = array();
+
 		if (isset($_REQUEST['signed_request'])) {
 
 			$encoded_sig = null;
@@ -160,12 +163,12 @@ class FB {
 			$sig = base64_decode(strtr($encoded_sig, '-_', '+/'));
 			$data = json_decode(base64_decode(strtr($payload, '-_', '+/'), true), true);
 			// save to session
-			$_SESSION["fb_signed_request"] = $data;
+			$_SESSION["fb"]["request"] = $data;
 			return $data;
 
-		} elseif( isset($_SESSION["fb_signed_request"]) ){
+		} elseif( isset($_SESSION["fb"]["request"]) ){
 
-			return $_SESSION["fb_signed_request"];
+			return $_SESSION["fb"]["request"];
 
 		} else {
 			return false;
