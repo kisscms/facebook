@@ -156,6 +156,24 @@ class FB {
 
 	}
 
+	// simplified version of Facebook's getLoginUrl
+	function getLoginUrl( $type="website" ){
+		var $options = array();
+		// localhost always uses OAuth?
+		if( $type=="website" || IS_LOCALHOST){
+			// do nothing - defaults should be ok
+		} else if( $type=="tab" ){
+			// get page tab from request
+			$options['redirect_uri'] = "https://facebook.com/". $this->request["page"]["id"] ."?sk=app_". FB_APPID;
+		} else if ( $type=="canvas" ){
+			$options['redirect_uri'] = "https://apps.facebook.com/". $GLOBALS['config']['facebook']['uri'];
+		} else {
+			// also include $type == app ?
+		}
+		return FB_OAuth::link( $options, false);
+	}
+
+
 	private function parsePageSignedRequest() {
 		// prerequisite
 		if( !array_key_exists("fb", $_SESSION) ) $_SESSION["fb"] = array();
