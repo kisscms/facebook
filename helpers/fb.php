@@ -74,15 +74,20 @@ class FB {
 
 	function login(){
 
-		// get/update the creds
-		$this->creds = $this->oauth->creds();
+		// check the request in case the token is already recieved
+		if( $this->request && $this->request['oauth_token']){
+			// save this token back to oauth->creds() ?
+			$this->creds = array( 'access_token' => $this->request['oauth_token'] );
+		} else {
+			// get/update the creds from the oauth
+			$this->creds = $this->oauth->creds();
+		}
 
 		if( !empty($this->creds['access_token']) ){
 			$this->facebook->setAccessToken($this->creds['access_token']);
 		}
 		// check if the credentials are empty (only the token matters?)
 		return !empty($this->creds['access_token']);
-
 	}
 
 	function me(){
