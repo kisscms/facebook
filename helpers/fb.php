@@ -158,9 +158,9 @@ class FB {
 
 	// simplified version of Facebook's getLoginUrl
 	function getLoginUrl( $type="website" ){
-		var $options = array();
+		$options = array();
 		// localhost always uses OAuth?
-		if( $type=="website" || IS_LOCALHOST){
+		if( $type=="website" || IS_LOCALHOST ){
 			// do nothing - defaults should be ok
 		} else if( $type=="tab" ){
 			// get page tab from request
