@@ -3,6 +3,7 @@
 $oauth = getPath("helpers/kiss_oauth.php");
 ( $oauth ) ? require_once( $oauth ) : die("The site is offline as a nessesary plugin is missing. Please install oauth: github.com/kisscms/oauth");
 
+if( !class_exists("Fb_OAuth") ){
 
 /* Facebook OAuth for KISSCMS */
 class Fb_OAuth extends KISS_OAuth_v2 {
@@ -41,6 +42,7 @@ class Fb_OAuth extends KISS_OAuth_v2 {
 		$_SESSION['oauth']['facebook'] = (array) $auth;
 	}
 
+}
 }
 
 ?>

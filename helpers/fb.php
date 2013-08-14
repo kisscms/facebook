@@ -6,6 +6,8 @@
 	Created by Makis Tracend (@tracend)
 */
 
+if( !class_exists("FB") ){
+
 class FB {
 
 	public $facebook;
@@ -241,6 +243,6 @@ class FB {
 	}
 	*/
 }
-
+}
 
 ?>
