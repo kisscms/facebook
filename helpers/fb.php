@@ -77,7 +77,7 @@ class FB {
 	function login(){
 
 		// check the request in case the token is already recieved
-		if( $this->request && $this->request['oauth_token']){
+		if( $this->request && array_key_exists('oauth_token' , $this->request) ){
 			// save this token back to oauth->creds() ?
 			$this->creds = array( 'access_token' => $this->request['oauth_token'] );
 		} else {
