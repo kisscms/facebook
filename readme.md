@@ -1,8 +1,17 @@
-## Facebook plugin for KISSCMS
+# KISSCMS: Facebook
 
-Version: 1.0
+Facebook API bindings for KISSCMS
 
 
-##Credits 
+## Dependencies
 
-Created by Makis Tracend (@tracend)
+* [Facebook SDK v3.2.3](https://github.com/facebook/facebook-php-sdk/releases/tag/v3.2.3)
+
+
+##Credits
+
+Initiated by Makis Tracend ( [@tracend](http://github.com/kisscms/facebook) )
+
+Distributed through [Makesites.org](http://makesites.org/)
+
+Released under the [MIT license](http://makesites.org/licenses/MIT)
