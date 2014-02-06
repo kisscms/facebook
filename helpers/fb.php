@@ -10,6 +10,7 @@ if( !class_exists("FB") ){
 
 class FB {
 
+	public $name = "facebook";
 	public $facebook;
 	public $uid;
 	public $loginUrl;
