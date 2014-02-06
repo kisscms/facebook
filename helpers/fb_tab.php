@@ -6,7 +6,6 @@
 // Main Tab controller
 class FB_Tab {
 
-	public $name = "facebook";
 	public $facebook;
 	private $name;
 	private $data;
