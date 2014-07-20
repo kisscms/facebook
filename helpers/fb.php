@@ -93,10 +93,11 @@ class FB {
 		return !empty($this->creds['access_token']);
 	}
 
+	// connects to the service to get the user object
 	function me(){
-		// connect to the service to get the user object
-
-		//Facebook Authentication part
+		// make sure we're logged in...
+		$this->login();
+		// ping Facebook Graph for the uid
 		$uid = $this->facebook->getUser();
 
 		if ($uid) {
@@ -111,6 +112,8 @@ class FB {
 				//$this->page = $_SESSION['fb_page'];
 			}
 		}
+		// in any other case...
+		return false;
 
 	}
 
