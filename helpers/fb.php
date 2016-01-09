@@ -196,7 +196,8 @@ class FB {
 			return $data;
 
 		} elseif( isset($_SESSION["fb"]["request"]) ){
-
+			// restore signed request in the $_REQUEST obj to let the SDK find it
+			$_REQUEST['signed_request'] = $_SESSION["fb"]["request"];
 			return $_SESSION["fb"]["request"];
 
 		} else {
