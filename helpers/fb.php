@@ -67,7 +67,7 @@ class FB {
 
 	function init(){
 		// load all the necessery subclasses
-		$this->oauth = new FB_OAuth();
+		$this->oauth = new Fb_OAuth();
 		// get user data
 		$this->request = $this->parsePageSignedRequest();
 		// set the access_token from the request if available
@@ -176,7 +176,7 @@ class FB {
 		} else {
 			// also include $type == app ?
 		}
-		return FB_OAuth::link( $options, false);
+		return Fb_OAuth::link( $options, false);
 	}
 
 
