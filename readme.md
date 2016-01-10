@@ -5,7 +5,7 @@ Facebook API bindings for KISSCMS
 
 ## Dependencies
 
-* [Facebook SDK v3.2.3](https://github.com/facebook/facebook-php-sdk/releases/tag/v3.2.3)
+* [Facebook SDK v5.1.2](https://github.com/facebook/facebook-php-sdk-v4/releases/tag/5.1.2)
 
 
 ##Credits
