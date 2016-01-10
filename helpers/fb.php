@@ -28,11 +28,16 @@ class FB {
 		$this->config = $GLOBALS['config']['facebook'];
 
 		// init
-		$this->facebook = new Facebook(array(
-			'appId' => $this->config['appId'],
-			'secret' => $this->config['secret'],
+		$this->facebook = new Facebook\Facebook([
+			'app_id' => $this->config['appId'],
+			'app_secret' => $this->config['secret'],
+			'default_graph_version' => 'v2.5',
+			//'default_access_token' => '{access-token}', // optional
 			'cookie' => true
-		));
+		]);
+		// application object
+		//$this->app = new Facebook\FacebookApp($this->config['appId'], $this->config['secret']);
+		$this->app = $this->facebook->getApp();
 
 		// FIX: session ID is not being passed in IE.
 		// reference http://stackoverflow.com/a/8600879
@@ -87,30 +92,38 @@ class FB {
 		}
 
 		if( !empty($this->creds['access_token']) ){
-			$this->facebook->setAccessToken($this->creds['access_token']);
+			// v5 SDK
+			$_SESSION['facebook_access_token'] = $this->creds['access_token'];
+			$this->facebook->setDefaultAccessToken( $this->creds['access_token'] );
+			// legacy
+			//$this->facebook->setAccessToken($this->creds['access_token']);
 		}
 		// check if the credentials are empty (only the token matters?)
 		return !empty($this->creds['access_token']);
 	}
 
 	// connects to the service to get the user object
-	function me(){
+	function me( $fields="id,name,picture,link,about" ){
 		// make sure we're logged in...
 		$this->login();
-		// ping Facebook Graph for the uid
-		$uid = $this->facebook->getUser();
+		// ping Facebook Graph for the (updated) user details)
+		try {
+			// Proceed knowing you have a logged in user who's authenticated.
+			$api = $this->facebook->get("/me?fields=". $fields);
+			// get data and save for later
+			$body = $api->getBody();
+			// parse to an array
+			$this->user = ( is_scalar($body) ) ? json_decode($body, true) : $body;
+			//$this->request = $this->facebook->getSignedRequest();
+			// normalize data
+			if( !empty($this->user['picture']['data']['url']) ) $this->user['picture'] = $this->user['picture']['data']['url']; // error control?
 
-		if ($uid) {
-			try {
-				// Proceed knowing you have a logged in user who's authenticated.
-				$this->user = $this->facebook->api("/me");
-				//$this->request = $this->facebook->getSignedRequest();
-				return $this->user;
-			} catch (FacebookApiException $e) {
-				//error_log($e);
-				// fallback to the session values
-				//$this->page = $_SESSION['fb_page'];
-			}
+			return $this->user;
+		} catch (FacebookApiException $e) {
+			//error_log($e);
+			// fallback to the session values
+			//$this->page = $_SESSION['fb_page'];
+			return false;
 		}
 		// in any other case...
 		return false;
@@ -123,13 +136,13 @@ class FB {
 
 		// add access_token
 		if( empty($params['access_token']) ) $params['access_token'] = $this->creds['access_token'];
-
-		$this->facebook->setAccessToken($params['access_token']);
+		// why do I need to do this again?
+		$this->facebook->setDefaultAccessToken($params['access_token']);
 		$query = http_build_query($params);
 
 		try {
 			// Proceed knowing you have a logged in user who's authenticated.
-			$results = $this->facebook->api( $service ."?". $query  );
+			$results = $this->facebook->get( $service ."?". $query  );
 		} catch (FacebookApiException $e) {
 			$results = $e;
 		}
@@ -150,11 +163,15 @@ class FB {
 
 	function getAdmins(){
 		$admins = array();
-		$api = $this->facebook->api("/fql?q=". urlencode("SELECT uid from page_admin WHERE page_id=".FB_APPID). "&format=json-strings");
-		if( !empty($api) ){
-			foreach( $api['data'] as $admin ){
-				if( array_key_exists('uid', $admin) ){
-					$admins[] = $admin['uid'];
+		$api = $this->facebook->get("/". FB_APPID ."/roles", $this->app->getAccessToken() );
+		$body = $api->getBody();
+		if( !empty($body) ){
+			// parse to an array
+			if( is_scalar($body) ) $body = json_decode($body, true);
+			//
+			foreach( $body['data'] as $admin ){
+				if( array_key_exists('user', $admin) ){
+					$admins[] = $admin['user'];
 				}
 			}
 		}
