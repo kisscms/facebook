@@ -105,7 +105,7 @@ class FB {
 	// connects to the service to get the user object
 	function me( $fields="id,name,picture,link,about" ){
 		// make sure we're logged in...
-		$this->login();
+		$login = $this->login();
 		// exit now if we're not logged in
 		if (!$login) return false;
 		// ping Facebook Graph for the (updated) user details)
