@@ -10,3 +10,6 @@ window.fbAsyncInit = function() {
 	});
 
 };
+
+// launch now if already init
+if( FB ) window.fbAsyncInit();
