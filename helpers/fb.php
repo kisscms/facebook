@@ -71,8 +71,12 @@ class FB {
 	}
 
 	function init(){
+		// The OAuth 2.0 client handler helps us manage access tokens
+		$oAuth2Client = $this->facebook->getOAuth2Client();
 		// load all the necessery subclasses
 		$this->oauth = new Fb_OAuth();
+		// pass the OAuth2 client
+		$this->oauth->client = $oAuth2Client;
 		// get user data
 		$this->request = $this->parsePageSignedRequest();
 		// set the access_token from the request if available
@@ -84,27 +88,8 @@ class FB {
 
 		// check the request in case the token is already recieved
 		if( $this->request && array_key_exists('oauth_token' , $this->request) ){
-			$token = $this->getAccessToken();
-			// The OAuth 2.0 client handler helps us manage access tokens
-			$oAuth2Client = $this->facebook->getOAuth2Client();
-			// Get the access token metadata from /debug_token
-			$tokenMetadata = $oAuth2Client->debugToken( $this->request['oauth_token'] );
-			// Validation (these will throw FacebookSDKException's when they fail)
-			$tokenMetadata->validateAppId( $this->config['appId'] );
-			// If you know the user ID this access token belongs to, you can validate it here
-			//$tokenMetadata->validateUserId('123');
-			$tokenMetadata->validateExpiration();
-
-			if (! $token->isLongLived()) {
-				// Exchanges a short-lived access token for a long-lived one
-				try {
-					$token = $oAuth2Client->getLongLivedAccessToken($token);
-				} catch (Facebook\Exceptions\FacebookSDKException $e) {
-					//echo "<p>Error getting long-lived access token: " . $helper->getMessage() . "</p>\n\n";
-				}
-			}
-			// save this token back to oauth->creds() ?
-			$this->creds = array( 'access_token' => (string) $token->getValue() );
+			// save this token back to oauth->creds()
+			$this->creds = $this->oauth->creds( array( 'access_token' => $this->request['oauth_token'] ) );
 		} else {
 			// get/update the creds from the oauth
 			$this->creds = $this->oauth->creds();
@@ -127,10 +112,12 @@ class FB {
 		$login = $this->login();
 		// exit now if we're not logged in
 		if (!$login) return false;
+		//
+		$token = $this->creds['access_token'];
 		// ping Facebook Graph for the (updated) user details)
 		try {
 			// Proceed knowing you have a logged in user who's authenticated.
-			$api = $this->facebook->get("/me?fields=". $fields);
+			$api = $this->facebook->get("/me?fields=". $fields, $token);
 			// get data and save for later
 			$body = $api->getBody();
 			// parse to an array
@@ -204,6 +191,12 @@ class FB {
 
 	}
 
+	// getting an app level access token
+	function getAccessToken(){
+		$token = $this->app->getAccessToken();
+		return $token;
+	}
+
 	// simplified version of Facebook's getLoginUrl
 	function getLoginUrl( $type="website" ){
 		$options = array();
@@ -252,24 +245,6 @@ class FB {
 		$data['url'] = $this->loginUrl;
 		$data['view'] = getPath('facebook/views/redirect.php');
 		return $data;
-	}
-
-	function getAccessToken(){
-		$accessToken = null;
-		//
-		try {
-			$accessToken = $this->app->getAccessToken();
-		} catch(Facebook\Exceptions\FacebookResponseException $e) {
-			// When Graph returns an error
-			//echo 'Graph returned an error: ' . $e->getMessage();
-			//exit;
-		} catch(Facebook\Exceptions\FacebookSDKException $e) {
-			// When validation fails or other local issues
-			//echo 'Facebook SDK returned an error: ' . $e->getMessage();
-			//exit;
-		}
-
-		return $accessToken;
 	}
 
 	// Cache
