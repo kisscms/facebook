@@ -48,7 +48,7 @@ class Fb_OAuth extends KISS_OAuth_v2 {
 		// Facebook specific methods...
 		$token = $this->getToken();
 		// prerequisite
-		if( $token ){
+		if( $token && isset($this->client) ){
 			// Get the access token metadata from /debug_token
 			$tokenMetadata = $this->client->debugToken( $token );
 			// pickup expiry date
