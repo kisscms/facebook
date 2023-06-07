@@ -57,7 +57,7 @@ class FB_Tab {
 		// render page
 		//$this->render();
 
-		return parent::__construct($controller_path,$web_folder,$default_controller,$default_function);
+		//return parent::__construct($controller_path,$web_folder,$default_controller,$default_function);
 	}
 
 	/*
